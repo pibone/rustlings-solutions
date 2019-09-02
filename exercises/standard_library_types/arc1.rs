@@ -8,44 +8,26 @@ use std::sync::Arc;
 use std::thread;
 
 fn main() {
-    let numbers: Vec<_> = (0..100u32).collect();
-    let shared_numbers = // TODO
-    let mut joinhandles = Vec::new();
+  let numbers: Vec<_> = (0..100u32).collect();
+  let shared_numbers = Arc::new(numbers); // TODO
+  let mut joinhandles = Vec::new();
 
-    for offset in 0..8 {
-        joinhandles.push(thread::spawn(move || {
-            let mut i = offset;
-            let mut sum = 0;
-            while i < child_numbers.len() {
-                sum += child_numbers[i];
-                i += 5;
-            }
-            println!("Sum of offset {} is {}", offset, sum);
-        }));
-    }
-    for handle in joinhandles.into_iter() {
-        handle.join().unwrap();
-    }
+  for offset in 0..8 {
+    let child_numbers = Arc::clone(&shared_numbers);
+    joinhandles.push(thread::spawn(move || {
+      let mut i = offset;
+      let mut sum = 0;
+      while i < child_numbers.len() {
+        sum += child_numbers[i];
+        i += 5;
+      }
+      println!("Sum of offset {} is {}", offset, sum);
+    }));
+  }
+  for handle in joinhandles.into_iter() {
+    handle.join().unwrap();
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Make `shared_numbers` be an `Arc` from the numbers vector. Then, in order
 // to avoid creating a copy of `numbers`, you'll need to create `child_numbers`

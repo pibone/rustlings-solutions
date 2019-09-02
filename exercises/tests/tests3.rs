@@ -13,7 +13,9 @@ mod tests {
 
     #[test]
     fn is_true_when_even() {
-        assert!();
+      let x = 15 * 2;
+      assert!(is_even(x));
+      assert!(!is_even(x + 1));
     }
 }
 
